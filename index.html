@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Three.js_test</title>
+</head>
+<body>
+  <div id="stage" style="margin: 100px auto 0; width: 90%;"></div>
+  <script src="js/three.min.js"></script>
+  <script src="js/OrbitControls.js"></script>
+  <script>
+    (()=>{
+      'use strict';
+
+      let scene;
+      let person;
+      let sphere1;
+      let sphere2;
+      let head;
+      let body;
+      let light;
+      let ambient;
+      let camera;
+      let gridHelper;
+      let axisHelper;
+      let lightHelper;
+      let renderer;
+      let width = 500;
+      let height = 250;
+
+
+      // scene シーン
+      scene = new THREE.Scene();
+
+      // mesh 物体
+      // - geometry 形状
+      // - material 材質
+      // - position 位置
+      // - rotation 角度
+      ////////////////////////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////////////
+      head = new THREE.Mesh(
+        new THREE.BoxGeometry(20, 20, 20),
+        new THREE.MeshLambertMaterial({ color: 'tomato' })//材質　MeshLambertMaterialは光を反射する素材
+      );
+      head.position.set(0, 35, 0);
+
+      body = new THREE.Mesh(
+        new THREE.BoxGeometry(50, 50, 50),
+        new THREE.MeshLambertMaterial({ color: 'tomato' })//材質　MeshLambertMaterialは光を反射する素材
+      );
+      body.position.set(0, 0, 0);
+
+      sphere1 = new THREE.Mesh(
+      new THREE.SphereGeometry(20, 20, 20),
+      new THREE.MeshPhongMaterial({ color: '#eeaaaa' ,wireframe: true})
+      );
+      sphere1.position.set(100, 0, 0);
+
+      sphere2 = new THREE.Mesh(
+      new THREE.SphereGeometry(20, 20, 20),
+      new THREE.MeshPhongMaterial({ color: '#eeaaaa' ,wireframe: true})
+      );
+      sphere2.position.set(-100, 0, 0);
+
+      person = new THREE.Group();//グループを作る
+      person.add(head);
+      person.add(body);
+      person.add(sphere1);
+      person.add(sphere2);
+      scene.add(person);
+      ////////////////////////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////////////
+      // light
+      light = new THREE.DirectionalLight(0x999999, 2);
+      light.position.set(100, 100, 30);
+      scene.add(light);
+      ambient = new THREE.AmbientLight(0x404040);
+      scene.add(ambient);
+
+      // camera
+      //透視投影：近いものは大きく、遠いものは小さく写る　並行投影：視点からの距離に関係なく常に同じ大きさで写る
+      //new THREE.PerspectiveCamera(画角, アスペクト比, 描画開始距離, 描画終了距離);
+      camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
+      camera.position.set(200, 100, 300);
+      camera.lookAt(scene.position);
+
+      // helper
+      gridHelper = new THREE.GridHelper(200, 50);
+      // scene.add(gridHelper);
+      axisHelper = new THREE.AxisHelper(1000);
+      scene.add(axisHelper);
+      lightHelper = new THREE.DirectionalLightHelper(light, 20);
+      scene.add(lightHelper);
+
+      // renderer
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(width, height);
+      renderer.setClearColor(0xefefef);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      document.getElementById('stage').appendChild(renderer.domElement);
+
+    
+      function render() {
+      requestAnimationFrame(render);
+
+      person.rotation.y += 0.01;
+      renderer.render(scene, camera);
+      }
+      render();
+    })();
+  </script>
+</body>
+</html>
